@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Matematika Peternakan - Penjumlahan</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Styling untuk notifikasi kemenangan */
+        #victoryNotification {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #facc15, #f97316);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 1000;
+            animation: popIn 0.5s ease-out;
+        }
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            animation: fall 2s infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        /* Styling spesial untuk balok statis */
+        .static-block {
+            background: linear-gradient(135deg, #ffd700, #ff8c00); /* Gradien emas ke oranye */
+            border: 3px solid #d4af37; /* Border emas */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan lembut */
+            font-size: 1.5rem; /* Teks lebih besar */
+            color: #fff; /* Teks putih */
+            font-weight: bold;
+            width: 80px;
+            height: 80px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease; /* Animasi saat disentuh */
+        }
+        .static-block:hover {
+            transform: scale(1.05); /* Sedikit membesar saat hover */
+        }
+    </style>
+</head>
+<body class="bg-green-100">
+    <nav class="flex justify-center items-center top-0 w-full h-20 z-50 bg-opacity-0">
+        <h5>
+            <a href="../index.html" class="inline-block px-6 py-3 bg-amber-300 hover:bg-amber-400 text-black rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 shadow-lg">
+                <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Kembali ke Beranda
+                </span>
+            </a>
+        </h5>
+    </nav>
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold text-center text-green-800 mb-8" id="gameTitle">Latihan Penjumlahan Sapi</h1>
+            <div class="bg-white rounded-xl p-6 border-b-4 border-r-4 border-green-600 shadow-lg relative">
+                <!-- Soal -->
+                <div class="text-center mb-6">
+                    <p class="text-2xl font-semibold text-gray-800" id="question">Soal: ?</p>
+                    <p class="text-gray-600" id="instruction">Masukkan sapi dari luar ke kandang!</p>
+                </div>
+
+                <!-- Area Permainan -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Kandang -->
+                    <div id="barnArea" class="bg-green-200 p-4 rounded-lg border-4 border-green-700 min-h-[150px]">
+                        <h3 class="text-xl font-bold text-green-800 mb-2">Kandang</h3>
+                        <div id="barnBlocks" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <!-- Luar Kandang -->
+                    <div id="outsideArea" class="bg-blue-200 p-4 rounded-lg border-4 border-blue-700 min-h-[150px]">
+                        <h3 class="text-xl font-bold text-blue-800 mb-2">Luar Kandang</h3>
+                        <div id="outsideBlocks" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-6">
+                    <p class="text-center text-gray-700 font-semibold">Progres</p>
+                    <div class="w-full bg-gray-200 rounded-full h-6 mt-2">
+                        <div id="progressBar" class="bg-green-500 h-6 rounded-full w-0 transition-all duration-500"></div>
+                    </div>
+                </div>
+
+                <!-- Hasil -->
+                <div class="mt-6 text-center">
+                    <p class="text-xl font-bold text-green-800" id="result">Jumlah: <span id="currentCount">0</span> ekor 🐄</p>
+                    <button id="resetButton" class="mt-4 bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg border-b-2 border-r-2 border-yellow-600 font-bold hover:bg-yellow-300 transition-all">Soal Baru</button>
+                </div>
+
+                <!-- Dekorasi -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Notifikasi Kemenangan -->
+    <div id="victoryNotification">
+        <h2 class="text-3xl font-bold text-white">Hore! Kamu Menang! 🎉</h2>
+        <p class="text-lg text-white mt-2">Jawabanmu benar: <span id="victoryAnswer"></span> ekor! 🐄</p>
+        <button id="closeVictory" class="mt-4 bg-white text-orange-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-200 transition-all">Main Lagi</button>
+    </div>
+
+    <script>
+        // Game Logic
+        const barnArea = document.getElementById('barnArea');
+        const outsideArea = document.getElementById('outsideArea');
+        const barnBlocks = document.getElementById('barnBlocks');
+        const outsideBlocks = document.getElementById('outsideBlocks');
+        const progressBar = document.getElementById('progressBar');
+        const currentCountDisplay = document.getElementById('currentCount');
+        const questionDisplay = document.getElementById('question');
+        const instructionDisplay = document.getElementById('instruction');
+        const resetButton = document.getElementById('resetButton');
+        const victoryNotification = document.getElementById('victoryNotification');
+        const victoryAnswer = document.getElementById('victoryAnswer');
+        const closeVictory = document.getElementById('closeVictory');
+
+        let currentCount, targetCount, initialCount, addAmount;
+        let blockCounter = 0; // Untuk memberikan ID unik pada setiap balok
+        let staticBlock; // Referensi ke balok statis
+
+        // Fungsi untuk menghasilkan soal acak (khusus penjumlahan)
+        function generateQuestion() {
+            initialCount = Math.floor(Math.random() * 50) + 10; // 10-59
+            addAmount = Math.floor(Math.random() * 40) + 10; // 10-49
+            targetCount = initialCount + addAmount;
+
+            questionDisplay.textContent = `Soal: ${initialCount} + ${addAmount} = ?`;
+            currentCount = initialCount;
+            currentCountDisplay.textContent = currentCount;
+            progressBar.style.width = '0%';
+            blockCounter = 0; // Reset counter untuk ID unik
+            setupBlocks();
+        }
+
+        // Fungsi untuk membuat balok dengan emoji 🐄 dan ID unik
+        function createBlock(count, isStatic = false) {
+            const block = document.createElement('div');
+            block.classList.add('rounded-lg', 'flex', 'items-center', 'justify-center', 'font-bold', 'border-2');
+            if (!isStatic) {
+                block.classList.add('cow-block');
+                block.setAttribute('draggable', 'true');
+                block.id = `block-${blockCounter++}`; // Tambahkan ID unik
+                if (count >= 10) {
+                    block.classList.add('bg-yellow-400', 'w-16', 'h-16', 'text-white', 'border-yellow-600');
+                } else {
+                    block.classList.add('bg-yellow-200', 'w-12', 'h-12', 'text-gray-800', 'border-yellow-600');
+                }
+            } else {
+                block.classList.add('static-block'); // Kelas spesial untuk balok statis
+                block.id = 'static-block'; // ID khusus untuk balok statis
+            }
+            block.setAttribute('data-cows', count);
+            block.innerHTML = `${count} 🐄`; // Tambahkan emoji 🐄
+            return block;
+        }
+
+        // Fungsi untuk memecah angka menjadi balok (1, 2, 3, 5, 7, 10)
+        function decomposeNumber(num) {
+            const blocks = [];
+            const availableBlocks = [10, 7, 5, 3, 2, 1];
+            let remaining = num;
+
+            for (let block of availableBlocks) {
+                while (remaining >= block) {
+                    blocks.push(block);
+                    remaining -= block;
+                }
+            }
+            return blocks;
+        }
+
+        // Fungsi untuk menyiapkan balok awal
+        function setupBlocks() {
+            barnBlocks.innerHTML = '';
+            outsideBlocks.innerHTML = '';
+
+            // Tampilkan jumlah awal di kandang sebagai balok statis
+            staticBlock = createBlock(initialCount, true);
+            barnBlocks.appendChild(staticBlock);
+
+            // Balok penjumlahan dipecah dan diletakkan di luar kandang
+            const addBlocks = decomposeNumber(addAmount);
+            addBlocks.forEach(count => {
+                outsideBlocks.appendChild(createBlock(count));
+            });
+
+            addDragListeners();
+        }
+
+        // Fungsi untuk menambahkan event listener drag-and-drop
+        function addDragListeners() {
+            document.querySelectorAll('.cow-block').forEach(block => {
+                block.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', block.id); // Gunakan ID unik
+                });
+            });
+        }
+
+        // Drag over dan drop untuk area kandang
+        barnArea.addEventListener('dragover', (e) => e.preventDefault());
+        barnArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const blockId = e.dataTransfer.getData('text/plain');
+            const draggedBlock = document.getElementById(blockId);
+
+            if (draggedBlock && draggedBlock.parentElement === outsideBlocks) {
+                const cowCount = parseInt(draggedBlock.getAttribute('data-cows'));
+                currentCount += cowCount;
+                barnBlocks.appendChild(draggedBlock);
+
+                // Update UI
+                updateUI();
+            }
+        });
+
+        // Fungsi untuk update UI dan cek kemenangan
+        function updateUI() {
+            currentCountDisplay.textContent = currentCount;
+            staticBlock.innerHTML = `${currentCount} 🐄`; // Update balok statis
+            const progressPercentage = ((currentCount - initialCount) / addAmount) * 100;
+            progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
+
+            if (currentCount === targetCount) {
+                showVictory();
+            }
+        }
+
+        // Fungsi untuk menampilkan notifikasi kemenangan meriah
+        function showVictory() {
+            victoryAnswer.textContent = targetCount;
+            victoryNotification.style.display = 'block';
+
+            // Tambahkan efek confetti
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 2000);
+            }
+        }
+
+        // Tutup notifikasi dan reset
+        closeVictory.addEventListener('click', () => {
+            victoryNotification.style.display = 'none';
+            generateQuestion();
+        });
+
+        // Reset game
+        resetButton.addEventListener('click', () => {
+            generateQuestion();
+        });
+
+        // Mulai permainan
+        generateQuestion();
+    </script>
+</body>
+</html>
