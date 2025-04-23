@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latihan Matematika Peternakan</title>
+    <title>Latihan Matematika Peternakan - Pengurangan</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Styling untuk notifikasi kemenangan */
         #victoryNotification {
             display: none;
             position: fixed;
@@ -36,24 +35,11 @@
             0% { transform: translateY(-100vh); opacity: 1; }
             100% { transform: translateY(100vh); opacity: 0; }
         }
-        /* Styling spesial untuk balok statis */
-        .static-block {
-            background: linear-gradient(135deg, #ffd700, #ff8c00); /* Gradien emas ke oranye */
-            border: 3px solid #d4af37; /* Border emas */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan lembut */
-            font-size: 1.5rem; /* Teks lebih besar */
-            color: #fff; /* Teks putih */
-            font-weight: bold;
-            width: 80px;
-            height: 80px;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease; /* Animasi saat disentuh */
+        .animal-block {
+            transition: transform 0.2s ease;
         }
-        .static-block:hover {
-            transform: scale(1.05); /* Sedikit membesar saat hover */
+        .animal-block:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -72,56 +58,44 @@
     </nav>
     <section class="py-12">
         <div class="container mx-auto px-4">
-            <h1 class="text-4xl font-bold text-center text-green-800 mb-8" id="gameTitle">Latihan Pengurangan Sapi</h1>
+            <h1 class="text-4xl font-bold text-center text-green-800 mb-8" id="gameTitle">Latihan Pengurangan Peternakan</h1>
             <div class="bg-white rounded-xl p-6 border-b-4 border-r-4 border-green-600 shadow-lg relative">
-                <!-- Soal -->
                 <div class="text-center mb-6">
                     <p class="text-2xl font-semibold text-gray-800" id="question">Soal: ?</p>
-                    <p class="text-gray-600" id="instruction">Keluarkan sapi dari kandang ke luar!</p>
+                    <p class="text-gray-600" id="instruction">Keluarkan hewan dari kandang ke luar untuk mencapai jumlah yang benar!</p>
                 </div>
-
-                <!-- Area Permainan -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Kandang -->
                     <div id="barnArea" class="bg-green-200 p-4 rounded-lg border-4 border-green-700 min-h-[150px]">
                         <h3 class="text-xl font-bold text-green-800 mb-2">Kandang</h3>
                         <div id="barnBlocks" class="flex flex-wrap gap-2"></div>
                     </div>
-                    <!-- Luar Kandang -->
                     <div id="outsideArea" class="bg-blue-200 p-4 rounded-lg border-4 border-blue-700 min-h-[150px]">
                         <h3 class="text-xl font-bold text-blue-800 mb-2">Luar Kandang</h3>
                         <div id="outsideBlocks" class="flex flex-wrap gap-2"></div>
                     </div>
                 </div>
-
-                <!-- Progress Bar -->
                 <div class="mt-6">
                     <p class="text-center text-gray-700 font-semibold">Progres</p>
                     <div class="w-full bg-gray-200 rounded-full h-6 mt-2">
                         <div id="progressBar" class="bg-red-500 h-6 rounded-full w-0 transition-all duration-500"></div>
                     </div>
                 </div>
-
-                <!-- Hasil -->
                 <div class="mt-6 text-center">
-                    <p class="text-xl font-bold text-green-800" id="result">Sisa: <span id="currentCount">0</span> ekor 🐄</p>
-                    <button id="resetButton" class="mt-4 bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg border-b-2 border-r-2 border-yellow-600 font-bold hover:bg-yellow-300 transition-all">Soal Baru</button>
+                    <p class="text-xl font-bold text-green-800" id="result">Sisa: <span id="currentCount">0</span> hewan 🐄🐑🐔</p>
+                    <div class="mt-4 space-x-4">
+                        <button id="checkButton" class="bg-green-500 text-white px-6 py-3 rounded-lg border-b-2 border-r-2 border-green-700 font-bold hover:bg-green-400 transition-all">Cek Jawaban</button>
+                        <button id="resetButton" class="bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg border-b-2 border-r-2 border-yellow-600 font-bold hover:bg-yellow-300 transition-all">Soal Baru</button>
+                    </div>
                 </div>
-
-                <!-- Dekorasi -->
             </div>
         </div>
     </section>
-
-    <!-- Notifikasi Kemenangan -->
     <div id="victoryNotification">
         <h2 class="text-3xl font-bold text-white">Hore! Kamu Menang! 🎉</h2>
-        <p class="text-lg text-white mt-2">Jawabanmu benar: <span id="victoryAnswer"></span> ekor! 🐄</p>
+        <p class="text-lg text-white mt-2">Jawabanmu benar: <span id="victoryAnswer"></span> hewan! 🐄🐑🐔</p>
         <button id="closeVictory" class="mt-4 bg-white text-orange-600 px-6 py-2 rounded-lg font-bold hover:bg-gray-200 transition-all">Main Lagi</button>
     </div>
-
     <script>
-        // Game Logic
         const barnArea = document.getElementById('barnArea');
         const outsideArea = document.getElementById('outsideArea');
         const barnBlocks = document.getElementById('barnBlocks');
@@ -131,51 +105,41 @@
         const questionDisplay = document.getElementById('question');
         const instructionDisplay = document.getElementById('instruction');
         const resetButton = document.getElementById('resetButton');
+        const checkButton = document.getElementById('checkButton');
         const victoryNotification = document.getElementById('victoryNotification');
         const victoryAnswer = document.getElementById('victoryAnswer');
         const closeVictory = document.getElementById('closeVictory');
 
-        let currentCount, targetCount, initialCount, subtractAmount;
-        let staticBlock; // Referensi ke balok statis
-        let blockCounter = 0; // Untuk ID unik
+        let targetCount, initialCount, subtractAmount;
+        let blockCounter = 0;
 
-        // Fungsi untuk menghasilkan soal acak (khusus pengurangan)
         function generateQuestion() {
-            initialCount = Math.floor(Math.random() * 90) + 10; // 10-99
-            subtractAmount = Math.floor(Math.random() * (initialCount - 10)) + 10; // Pastikan hasil > 0
+            initialCount = Math.floor(Math.random() * 50) + 30; // 30-79 for more animals
+            subtractAmount = Math.floor(Math.random() * (initialCount - 10)) + 10; // Ensure target > 0
             targetCount = initialCount - subtractAmount;
 
             questionDisplay.textContent = `Soal: ${initialCount} - ${subtractAmount} = ?`;
-            currentCount = initialCount;
-            currentCountDisplay.textContent = currentCount;
-            progressBar.style.width = '0%';
-            blockCounter = 0; // Reset counter
+            blockCounter = 0;
             setupBlocks();
         }
 
-        // Fungsi untuk membuat balok dengan emoji 🐄
-        function createBlock(count, isStatic = false) {
+        function createBlock(count, animalType) {
             const block = document.createElement('div');
-            block.classList.add('rounded-lg', 'flex', 'items-center', 'justify-center', 'font-bold', 'border-2');
-            if (!isStatic) {
-                block.classList.add('cow-block');
-                block.setAttribute('draggable', 'true');
-                block.id = `block-${blockCounter++}`; // Tambahkan ID unik
-                if (count >= 10) {
-                    block.classList.add('bg-yellow-400', 'w-16', 'h-16', 'text-white', 'border-yellow-600');
-                } else {
-                    block.classList.add('bg-yellow-200', 'w-12', 'h-12', 'text-gray-800', 'border-yellow-600');
-                }
+            block.classList.add('animal-block', 'rounded-lg', 'flex', 'items-center', 'justify-center', 'font-bold', 'border-2');
+            block.setAttribute('draggable', 'true');
+            block.id = `block-${blockCounter++}`;
+            if (count >= 10) {
+                block.classList.add('bg-yellow-400', 'w-16', 'h-16', 'text-white', 'border-yellow-600');
             } else {
-                block.classList.add('static-block'); // Kelas spesial untuk balok statis
-                block.id = 'static-block'; // ID khusus untuk balok statis
+                block.classList.add('bg-yellow-200', 'w-12', 'h-12', 'text-gray-800', 'border-yellow-600');
             }
-            block.setAttribute('data-cows', count);
-            block.innerHTML = `${count} 🐄`; // Tambahkan emoji 🐄
+            block.setAttribute('data-animals', count);
+            block.setAttribute('data-type', animalType);
+            const emoji = animalType === 'cow' ? '🐄' : animalType === 'sheep' ? '🐑' : '🐔';
+            block.innerHTML = `${count} ${emoji}`;
             return block;
         }
 
-        // Fungsi untuk memecah angka menjadi balok (1, 2, 3, 5, 7, 10)
         function decomposeNumber(num) {
             const blocks = [];
             const availableBlocks = [10, 7, 5, 3, 2, 1];
@@ -190,34 +154,69 @@
             return blocks;
         }
 
-        // Fungsi untuk menyiapkan balok awal
+        function updateCurrentCount() {
+            let total = 0;
+            barnBlocks.querySelectorAll('.animal-block').forEach(block => {
+                total += parseInt(block.getAttribute('data-animals'));
+            });
+            currentCountDisplay.textContent = total;
+            return total;
+        }
+
         function setupBlocks() {
             barnBlocks.innerHTML = '';
             outsideBlocks.innerHTML = '';
 
-            // Tampilkan jumlah awal di kandang sebagai balok statis
-            staticBlock = createBlock(initialCount, true);
-            barnBlocks.appendChild(staticBlock);
+            const animals = ['cow', 'sheep', 'chicken'];
+            const initialBlocks = decomposeNumber(initialCount);
+            const extraBlocks = decomposeNumber(subtractAmount + Math.floor(Math.random() * 30) + 20); // Extra animals
 
-            // Balok pengurangan dipecah dan diletakkan di kandang
-            const subtractBlocks = decomposeNumber(subtractAmount);
-            subtractBlocks.forEach(count => {
-                barnBlocks.appendChild(createBlock(count));
+            initialBlocks.forEach(count => {
+                const animal = animals[Math.floor(Math.random() * animals.length)];
+                barnBlocks.appendChild(createBlock(count, animal));
             });
 
+            extraBlocks.forEach(count => {
+                const animal = animals[Math.floor(Math.random() * animals.length)];
+                barnBlocks.appendChild(createBlock(count, animal));
+            });
+
+            // Ensure solvability by adding small denomination blocks
+            const totalInBarn = initialBlocks.reduce((sum, val) => sum + val, 0) + extraBlocks.reduce((sum, val) => sum + val, 0);
+            if (totalInBarn < targetCount) {
+                const extraNeeded = targetCount - totalInBarn + 10;
+                decomposeNumber(extraNeeded).forEach(count => {
+                    const animal = animals[Math.floor(Math.random() * animals.length)];
+                    barnBlocks.appendChild(createBlock(count, animal));
+                });
+            }
+
             addDragListeners();
+            updateCurrentCount();
+            updateUI();
         }
 
-        // Fungsi untuk menambahkan event listener drag-and-drop
         function addDragListeners() {
-            document.querySelectorAll('.cow-block').forEach(block => {
+            document.querySelectorAll('.animal-block').forEach(block => {
                 block.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', block.id); // Gunakan ID unik
+                    e.dataTransfer.setData('text/plain', block.id);
                 });
             });
         }
 
-        // Drag over dan drop untuk area luar
+        barnArea.addEventListener('dragover', (e) => e.preventDefault());
+        barnArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const blockId = e.dataTransfer.getData('text/plain');
+            const draggedBlock = document.getElementById(blockId);
+
+            if (draggedBlock && draggedBlock.parentElement === outsideBlocks) {
+                barnBlocks.appendChild(draggedBlock);
+                updateCurrentCount();
+                updateUI();
+            }
+        });
+
         outsideArea.addEventListener('dragover', (e) => e.preventDefault());
         outsideArea.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -225,33 +224,31 @@
             const draggedBlock = document.getElementById(blockId);
 
             if (draggedBlock && draggedBlock.parentElement === barnBlocks) {
-                const cowCount = parseInt(draggedBlock.getAttribute('data-cows'));
-                currentCount -= cowCount;
                 outsideBlocks.appendChild(draggedBlock);
-
-                // Update UI
+                updateCurrentCount();
                 updateUI();
             }
         });
 
-        // Fungsi untuk update UI dan cek kemenangan
         function updateUI() {
-            currentCountDisplay.textContent = currentCount;
-            staticBlock.innerHTML = `${currentCount} 🐄`; // Update balok statis
+            const currentCount = parseInt(currentCountDisplay.textContent);
             const progressPercentage = ((initialCount - currentCount) / subtractAmount) * 100;
             progressBar.style.width = `${Math.min(progressPercentage, 100)}%`;
-
-            if (currentCount === targetCount) {
-                showVictory();
-            }
         }
 
-        // Fungsi untuk menampilkan notifikasi kemenangan meriah
+        checkButton.addEventListener('click', () => {
+            const currentCount = parseInt(currentCountDisplay.textContent);
+            if (currentCount === targetCount) {
+                showVictory();
+            } else {
+                alert(`Jawaban salah! Sisa saat ini: ${currentCount}. Coba lagi untuk mencapai ${targetCount}.`);
+            }
+        });
+
         function showVictory() {
             victoryAnswer.textContent = targetCount;
             victoryNotification.style.display = 'block';
 
-            // Tambahkan efek confetti
             for (let i = 0; i < 50; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
@@ -263,18 +260,15 @@
             }
         }
 
-        // Tutup notifikasi dan reset
         closeVictory.addEventListener('click', () => {
             victoryNotification.style.display = 'none';
             generateQuestion();
         });
 
-        // Reset game
         resetButton.addEventListener('click', () => {
             generateQuestion();
         });
 
-        // Mulai permainan
         generateQuestion();
     </script>
 </body>
